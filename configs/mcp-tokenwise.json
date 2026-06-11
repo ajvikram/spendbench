@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "tokenwise": {
+      "type": "stdio",
+      "command": "/Users/ajaysingh/.bun/bin/tokenwise",
+      "args": ["mcp"],
+      "env": {}
+    }
+  }
+}

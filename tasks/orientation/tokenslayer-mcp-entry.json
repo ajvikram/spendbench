@@ -1,0 +1,8 @@
+{
+  "id": "orient-tokenslayer-mcp-entry",
+  "type": "orientation",
+  "repo": "~/Ajay/work/TokenSlayer",
+  "prompt": "In this repository, which package implements the standalone MCP server, and what is the name of the CLI binary it exposes in its package.json bin field? Answer with the package directory and the binary name.",
+  "expected_regex": ["mcp-server", "tokenslayer-mcp"],
+  "notes": "Smoke-test task. Verifiable from mcp-server/package.json: bin = tokenslayer-mcp."
+}

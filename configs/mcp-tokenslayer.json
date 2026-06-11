@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "tokenslayer": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["/Users/ajaysingh/Ajay/work/TokenSlayer/mcp-server/build/index.js"],
+      "env": {}
+    }
+  }
+}

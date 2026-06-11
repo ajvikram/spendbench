@@ -1,0 +1,8 @@
+{
+  "id": "orient-lodash-baseflatten",
+  "type": "orientation",
+  "repo": "~/Ajay/work/spendbench/repos/lodash",
+  "prompt": "In lodash.js, the internal function baseFlatten uses a default predicate to decide whether a value should be flattened. What is that predicate function called? Also name at least three public functions that call baseFlatten internally.",
+  "expected_regex": ["isFlattenable", "flattenDeep|flattenDepth|flatMap|union|difference|concat"],
+  "notes": "Large-file orientation: lodash.js is a single 17,259-line file. Ground truth: predicate defaults to isFlattenable (L2984); callers include flatten, flattenDeep, flattenDepth, flatMap(Deep/Depth), concat, union/difference families."
+}
