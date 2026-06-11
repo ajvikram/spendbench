@@ -1,0 +1,13 @@
+{
+  "harness": "aider",
+  "model": "gpt-4o",
+  "n": 3,
+  "timeout": 540,
+  "tasks": [
+    "tasks/orientation/lodash-baseflatten.json",
+    "tasks/orientation/express-view-sendfile.json"
+  ],
+  "conditions": {
+    "baseline": null
+  }
+}

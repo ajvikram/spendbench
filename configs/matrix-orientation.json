@@ -1,0 +1,15 @@
+{
+  "model": "claude-sonnet-4-6",
+  "n": 3,
+  "timeout": 540,
+  "tasks": [
+    "tasks/orientation/tokenslayer-mcp-entry.json",
+    "tasks/orientation/lodash-baseflatten.json",
+    "tasks/orientation/express-view-sendfile.json"
+  ],
+  "conditions": {
+    "baseline": null,
+    "tokenslayer-mcp": "configs/mcp-tokenslayer.json",
+    "tokenwise-mcp": "configs/mcp-tokenwise.json"
+  }
+}

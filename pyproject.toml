@@ -7,6 +7,10 @@ dependencies = [
     "aiohttp>=3.9",
 ]
 
+[project.optional-dependencies]
+# Second harness: drives OpenAI / Gemini / Anthropic models through the proxy.
+aider = ["aider-chat>=0.86"]
+
 [build-system]
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"

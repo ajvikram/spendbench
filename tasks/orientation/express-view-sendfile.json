@@ -1,0 +1,8 @@
+{
+  "id": "orient-express-view-sendfile",
+  "type": "orientation",
+  "repo": "~/Ajay/work/spendbench/repos/express",
+  "prompt": "In this repository: (1) which class implements template/view resolution and in which file is it defined? (2) which method of the response object streams a file from disk to the client? Name the class, both files, and the method.",
+  "expected_regex": ["View", "view\\.js", "sendFile", "response\\.js"],
+  "notes": "Multi-file orientation on a foreign repo. Ground truth: View class in lib/view.js; res.sendFile in lib/response.js."
+}

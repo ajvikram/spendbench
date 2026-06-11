@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Offline e2e (proxy + pricing + grading)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install
+        run: pip install -e .
+      - name: OpenAI proxy e2e (stub upstream, no API key)
+        run: python tests/e2e_openai_proxy.py
+      - name: Aider tagging e2e (stub upstream, no API key)
+        run: python tests/e2e_aider_proxy.py
+      - name: Import + CLI smoke
+        run: |
+          python -c "from spendbench import aggregate, isolation, pricing, proxy, run_matrix, run_one"
+          python -c "from spendbench.pricing import ensure_priced; ensure_priced('claude-sonnet-4-6'); ensure_priced('gpt-4o'); ensure_priced('gemini-2.5-pro')"
+          python -c "
+          from spendbench.run_one import extract_answer
+          a, found = extract_answer('repo map view.js sendFile\nANSWER: the View class')
+          assert found and a == 'the View class', (a, found)
+          a, found = extract_answer('no marker here')
+          assert not found and a == 'no marker here'
+          "
