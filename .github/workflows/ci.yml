@@ -18,8 +18,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install
-        run: pip install -e .
+      - name: Install (with aider extra — the aider e2e drives the real binary)
+        run: pip install -e '.[aider]'
       - name: OpenAI proxy e2e (stub upstream, no API key)
         run: python tests/e2e_openai_proxy.py
       - name: Aider tagging e2e (stub upstream, no API key)
