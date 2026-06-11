@@ -15,16 +15,19 @@ from pathlib import Path
 from .pricing import cost_cache_neutral_usd
 
 
-def neutral_cost(rec: dict) -> float:
+def neutral_cost(rec: dict) -> float | None:
     """Cache-neutral cost for a record, backfilled for legacy records.
 
     Older records (pre cache-neutral schema) stored the raw token breakdown but
     not cost_cache_neutral_usd. Recompute it from those tokens at the record's
     own model so historical runs aggregate alongside new ones rather than
-    crashing the table.
+    crashing the table. Manually-entered records (Copilot/Windsurf — no token
+    observability) have neither and report None.
     """
     if "cost_cache_neutral_usd" in rec:
         return rec["cost_cache_neutral_usd"]
+    if "input_tokens" not in rec:
+        return None
     return round(cost_cache_neutral_usd(
         rec["model"],
         rec.get("input_tokens", 0),
@@ -32,6 +35,12 @@ def neutral_cost(rec: dict) -> float:
         rec.get("cache_creation_input_tokens", 0),
         rec.get("cache_read_input_tokens", 0),
     ), 4)
+
+
+def med(recs: list[dict], key, fmt: str) -> str:
+    """Median of key over records where it's present; em-dash when absent."""
+    values = [v for r in recs if (v := (key(r) if callable(key) else r.get(key))) is not None]
+    return fmt.format(statistics.median(values)) if values else "—"
 
 
 def median_iqr(values: list[float]) -> str:
@@ -58,17 +67,19 @@ def main() -> None:
         raise SystemExit(f"no records found in {args.records}")
 
     header = ["task", "condition", "n", "solve_rate", "neutral_$ med [IQR]",
-              "raw_$ med", "tokens med", "wall_s med"]
+              "raw_$ med", "tokens med", "reqs/prompts", "wall_s med"]
     rows = []
     for (task, label), recs in sorted(groups.items()):
         solved = [r["solved"] for r in recs if r["solved"] is not None]
+        neutral = [v for r in recs if (v := neutral_cost(r)) is not None]
         rows.append([
             task, label, str(len(recs)),
             f"{sum(solved)/len(solved):.0%}" if solved else "—",
-            median_iqr([neutral_cost(r) for r in recs]),
-            f"{statistics.median([r['cost_usd'] for r in recs]):.3f}",
-            f"{statistics.median([r['total_tokens'] for r in recs]):,.0f}",
-            f"{statistics.median([r['wall_clock_s'] for r in recs]):.0f}",
+            median_iqr(neutral) if neutral else "—",
+            med(recs, "cost_usd", "{:.3f}"),
+            med(recs, "total_tokens", "{:,.0f}"),
+            med(recs, lambda r: r.get("user_prompts", r.get("api_requests")), "{:.0f}"),
+            med(recs, "wall_clock_s", "{:.0f}"),
         ])
 
     widths = [max(len(h), *(len(r[i]) for r in rows)) for i, h in enumerate(header)]
